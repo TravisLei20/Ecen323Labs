@@ -1,0 +1,97 @@
+ Address    Code        Basic                     Source
+
+0x00000000  0x00004137  lui x2,0x00000004     34   	lui sp, 4				# 4 << 12 = 0x4000
+0x00000004  0xffc10113  addi x2,x2,0xfffffffc 35   	addi sp, sp, -4			# 0x4000 - 4 = 0x3ffc
+0x00000008  0x000021b7  lui x3,0x00000002     37   	lui gp, 2
+0x0000000c  0x00000413  addi x8,x0,0x00000000 40   	addi s0, x0, 0			# Loop index (initialize to zero)
+0x00000010  0x0001a483  lw x9,0x00000000(x3)  52   	lw s1,%lo(fib_count)(gp)	 # Load terminal count into s1
+0x00000014  0x00800533  add x10,x0,x8         56   	mv a0, s0
+0x00000018  0x080000ef  jal x1,0x00000040     57   	jal iterative_fibinnoci
+0x0000001c  0x00a00933  add x18,x0,x10        59   	mv s2, a0
+0x00000020  0x00800533  add x10,x0,x8         61   	mv a0, s0	
+0x00000024  0x0cc000ef  jal x1,0x00000066     62   	jal recursive_fibinnoci
+0x00000028  0x00a009b3  add x19,x0,x10        64   	mv s3, a0
+0x0000002c  0x00f47a13  andi x20,x8,0x0000000f67   	andi s4, s0, 0xf	# keep lower 4 bits (between zero and fifteen)
+0x00000030  0x002a1a13  slli x20,x20,0x000000069   	slli s4, s4, 2
+0x00000034  0x00418a93  addi x21,x3,0x0000000472   	addi s5, x3, %lo(iterative_data)
+0x00000038  0x014a8ab3  add x21,x21,x20       74   	add s5, s5, s4
+0x0000003c  0x012aa023  sw x18,0x00000000(x21)76   	sw s2,(s5)
+0x00000040  0x04418a93  addi x21,x3,0x0000004479   	addi s5, x3, %lo(recursive_data)
+0x00000044  0x014a8ab3  add x21,x21,x20       80   	add s5, s5, s4
+0x00000048  0x013aa023  sw x19,0x00000000(x21)82   	sw s3,(s5)
+0x0000004c  0x00940663  beq x8,x9,0x00000006  85   	beq s0, s1, done
+0x00000050  0x00140413  addi x8,x8,0x00000001 86   	addi s0, s0, 1
+0x00000054  0xfc1ff06f  jal x0,0xffffffe0     88   	j FIB_LOOP
+0x00000058  0x00000293  addi x5,x0,0x00000000 93   	addi t0, x0, 0     	# Counter (initialize to zero)
+0x0000005c  0x01000313  addi x6,x0,0x00000010 94   	addi t1, x0, 16		# Terminal count for loop
+0x00000060  0x00000513  addi x10,x0,0x0000000095   	addi a0, x0, 0		# Intialize a0 t0 zero
+0x00000064  0x00418393  addi x7,x3,0x00000004 97   	addi t2, gp, %lo(iterative_data)
+0x00000068  0x04418e13  addi x28,x3,0x0000004499   	addi t3, gp, %lo(recursive_data)
+0x0000006c  0x0003ae83  lw x29,0x00000000(x7) 103  	lw t4, (t2)
+0x00000070  0x01d50533  add x10,x10,x29       104  	add a0, a0, t4
+0x00000074  0x000e2e83  lw x29,0x00000000(x28)105  	lw t4, (t3)
+0x00000078  0x01d50533  add x10,x10,x29       106  	add a0, a0, t4
+0x0000007c  0x00438393  addi x7,x7,0x00000004 107  	addi t2, t2, 4		# increment pointer
+0x00000080  0x004e0e13  addi x28,x28,0x0000000108  	addi t3, t3, 4		# increment pointer
+0x00000084  0x00128293  addi x5,x5,0x00000001 109  	addi t0, t0, 1
+0x00000088  0xfe62c2e3  blt x5,x6,0xfffffff2  110  	blt t0, t1, final_add
+0x0000008c  0x00a00893  addi x17,x0,0x0000000a114  	addi a7, x0, 10   # Exit system call
+0x00000090  0x00000073  ecall                 115  	ecall
+0x00000094  0xff9ff06f  jal x0,0xfffffffc     116  	jal x0, END
+0x00000098  0xff810113  addi x2,x2,0xfffffff8 127  	addi sp, sp, -8		# This gives room to save values on the stack (approximately two variables)
+0x0000009c  0x00812023  sw x8,0x00000000(x2)  128  	sw s0, 0(sp)		# This saves the callee
+0x000000a0  0x00112223  sw x1,0x00000004(x2)  129  	sw ra, 4(sp)		# This is the return address being saved
+0x000000a4  0x00a00433  add x8,x0,x10         131  	mv s0, a0		# This saves the input into s0
+0x000000a8  0x02040c63  beq x8,x0,0x0000001c  134  	beq s0, zero, return	# If the input is equal to zero then return zero
+0x000000ac  0x00100293  addi x5,x0,0x00000001 137  	addi t0, x0, 1		# Setting t0 to one
+0x000000b0  0x02540863  beq x8,x5,0x00000018  138  	beq s0, t0, return	# If the input is equal to one then return one
+0x000000b4  0x00000393  addi x7,x0,0x00000000 140  	addi t2, x0, 0		# Setting t2(fib_2) to 0
+0x000000b8  0x00100313  addi x6,x0,0x00000001 141  	addi t1, x0, 1		# Setting t1(fib_1) to 1
+0x000000bc  0x00000293  addi x5,x0,0x00000000 142  	addi t0, x0, 0		# Setting t0(fib) to 0
+0x000000c0  0x00200e13  addi x28,x0,0x00000002144  	addi t3, x0, 2		# Setting t3(i) to 2
+0x000000c4  0x01c44e63  blt x8,x28,0x0000000e 147  loop:	blt s0, t3, return	# If a is less then i then return
+0x000000c8  0x007302b3  add x5,x6,x7          148  	add t0, t1, t2		# Add t1(fib_1) to t2(fib_2) and store the value into t0(fob)
+0x000000cc  0x006003b3  add x7,x0,x6          149  	mv t2, t1		# Set t2(fib_2) to t1(fib_1)'s values
+0x000000d0  0x00500333  add x6,x0,x5          150  	mv t1, t0		# Set t1(fib_1) to t0(fib)'s values
+0x000000d4  0x001e0e13  addi x28,x28,0x0000000151  	addi t3, t3, 1		# Increment t3(i) by one (i++)
+0x000000d8  0x00500533  add x10,x0,x5         152  	mv a0, t0		# Sets the return value to t0(fib)
+0x000000dc  0xfe0004e3  beq x0,x0,0xfffffff4  153  	beq x0, x0, loop	# Returns to the beginning of LOOP
+0x000000e0  0x00012403  lw x8,0x00000000(x2)  155  return:	lw s0, 0(sp)		# Restore callee address
+0x000000e4  0x00412083  lw x1,0x00000004(x2)  156  	lw ra, 4(sp)		# Restore return address
+0x000000e8  0x00810113  addi x2,x2,0x00000008 157  	addi sp, sp, 8		# Restore sp to its origional address
+0x000000ec  0x00008067  jalr x0,x1,0x00000000 161  	ret
+0x000000f0  0xfe810113  addi x2,x2,0xffffffe8 169  	addi sp, sp, -24	# This gives room to save values on the stack (approximately five variables)
+0x000000f4  0x00812023  sw x8,0x00000000(x2)  170  	sw s0, 0(sp)		# This saves the callee for s0
+0x000000f8  0x00912223  sw x9,0x00000004(x2)  171  	sw s1, 4(sp)		# This saves the callee for s1
+0x000000fc  0x01212423  sw x18,0x00000008(x2) 172  	sw s2, 8(sp)		# This save the callee for s2
+0x00000100  0x01312623  sw x19,0x0000000c(x2) 173  	sw s3, 12(sp)		# This saves the callee for s3
+0x00000104  0x01412823  sw x20,0x00000010(x2) 174  	sw s4, 16(sp)		# This saves the callee for s4
+0x00000108  0x00112a23  sw x1,0x00000014(x2)  175  	sw ra, 20(sp)		# This is the return address being saved
+0x0000010c  0x00a00433  add x8,x0,x10         178  	mv s0, a0		# This saves the input into s0
+0x00000110  0x00a004b3  add x9,x0,x10         179  	mv s1, a0		# This saves the input into s1
+0x00000114  0x02040e63  beq x8,x0,0x0000001e  182  	beq s0, zero, return_recursive	# If the input is equal to zero then return zero
+0x00000118  0x00100293  addi x5,x0,0x00000001 185  	addi t0, x0, 1		# Setting t0 to one
+0x0000011c  0x02540a63  beq x8,x5,0x0000001a  186  	beq s0, t0, return_recursive	# If the input is equal to one then return one
+0x00000120  0xfff40413  addi x8,x8,0xffffffff 189  	addi s0, s0, -1		# This subtracts s0 by one (a-1)
+0x00000124  0x00800533  add x10,x0,x8         190  	mv a0, s0		# This takes s0 and puts its values into a0
+0x00000128  0xfc9ff0ef  jal x1,0xffffffe4     191  	jal fibinnoci		# Calls fibinnoci
+0x0000012c  0x00a00933  add x18,x0,x10        193  	mv s2, a0		# Stores the value of a0 (the return value of the fibinnoci funtion that was just called) into s2
+0x00000130  0xffe48493  addi x9,x9,0xfffffffe 195  	addi s1, s1, -2		# This subtracts s1 by one (a-2)
+0x00000134  0x00900533  add x10,x0,x9         196  	mv a0, s1		# This takes s1 and puts its values into a0
+0x00000138  0xfb9ff0ef  jal x1,0xffffffdc     197  	jal fibinnoci		# Calls fibinnoci
+0x0000013c  0x00a009b3  add x19,x0,x10        199  	mv s3, a0		# Stores the value of a0 (the return value of the fibinnoci funtion that was just called) into s3
+0x00000140  0x013902b3  add x5,x18,x19        201  	add t0, s2, s3		# This adds the results of the two recursive fibinnoci values of s2 and s3 and stores it into t0
+0x00000144  0x005a0a33  add x20,x20,x5        203  	add s4, s4, t0		# The result of t0 will be added to s4
+0x00000148  0x01400533  add x10,x0,x20        205  	mv a0, s4		# The values of s4 are stored into a0
+0x0000014c  0x00000263  beq x0,x0,0x00000002  207  	beq x0, x0, return_recursive	# Calls return
+0x00000150  0x00012403  lw x8,0x00000000(x2)  210  return_recursive:	lw s0, 0(sp)		# Restore callee address
+0x00000154  0x00412483  lw x9,0x00000004(x2)  211  	lw s1, 4(sp)		# Restore callee address
+0x00000158  0x00812903  lw x18,0x00000008(x2) 212  	lw s2, 8(sp)		# Restore callee address
+0x0000015c  0x00c12983  lw x19,0x0000000c(x2) 213  	lw s3, 12(sp)		# Restore callee address
+0x00000160  0x01012a03  lw x20,0x00000010(x2) 214  	lw s4, 16(sp)		# Restore callee address
+0x00000164  0x01412083  lw x1,0x00000014(x2)  215  	lw ra, 20(sp)		# Restore return address
+0x00000168  0x01810113  addi x2,x2,0x00000018 216  	addi sp, sp, 24		# Restore sp to its origional address
+0x0000016c  0x00008067  jalr x0,x1,0x00000000 218  	ret
+0x00000170  0x00000013  addi x0,x0,0x00000000 220  	nop
+0x00000174  0x00000013  addi x0,x0,0x00000000 221  	nop
+0x00000178  0x00000013  addi x0,x0,0x00000000 222  	nop
