@@ -1,0 +1,10 @@
+0.6
+2019.2
+Nov  6 2019
+21:42:20
+/auto/fsd/leicr/323-labs-TravisLei20/lab02/alu.sv,1642023191,systemVerilog,/auto/fsd/leicr/323-labs-TravisLei20/lab03/regfile.sv;/auto/fsd/leicr/323-labs-TravisLei20/lab08/proj/project_1/project_1.srcs/sources_1/new/riscv_basic_pipeline.sv;/auto/fsd/leicr/323-labs-TravisLei20/lab08/riscv_pipeline_tb.sv,/auto/fsd/leicr/323-labs-TravisLei20/lab03/regfile.sv,/auto/fsd/leicr/323-labs-TravisLei20/lab02/riscv_alu_constants.sv,$unit_alu_sv;alu,,,,,,,,
+/auto/fsd/leicr/323-labs-TravisLei20/lab02/riscv_alu_constants.sv,1644993398,verilog,,,,,,,,,,,,
+/auto/fsd/leicr/323-labs-TravisLei20/lab03/regfile.sv,1642790550,systemVerilog,,/auto/fsd/leicr/323-labs-TravisLei20/lab08/proj/project_1/project_1.srcs/sources_1/new/riscv_basic_pipeline.sv,,regfile,,,,,,,,
+/auto/fsd/leicr/323-labs-TravisLei20/lab08/proj/project_1/project_1.sim/sim_1/behav/xsim/glbl.v,1573089660,verilog,,,,glbl,,,,,,,,
+/auto/fsd/leicr/323-labs-TravisLei20/lab08/proj/project_1/project_1.srcs/sources_1/new/riscv_basic_pipeline.sv,1646863623,systemVerilog,,/auto/fsd/leicr/323-labs-TravisLei20/lab08/riscv_pipeline_tb.sv,,riscv_basic_pipeline,,,,,,,,
+/auto/fsd/leicr/323-labs-TravisLei20/lab08/riscv_pipeline_tb.sv,1645561058,systemVerilog,,,,riscv_pipeline_tb;riscv_sim_model,,,,,,,,
