@@ -1,0 +1,4 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/auto/fsd/leicr/323-labs-TravisLei20/lab01/passoff_temp_dir/lab01/UpDownButtonCount.sv" into library work
+INFO: [VRFC 10-311] analyzing module UpDownButtonCount
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/auto/fsd/leicr/323-labs-TravisLei20/lab01/passoff_temp_dir/lab01/buttoncount/OneShot.sv" into library work
+INFO: [VRFC 10-311] analyzing module OneShot

@@ -1,0 +1,2 @@
+Success:TCL Simulation (updown_tcl)
+Success:Synthesis/Bitstream Gen (UpDownButtonCount)
