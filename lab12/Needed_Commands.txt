@@ -1,0 +1,20 @@
+java -jar ../resources/rars1_4.jar mc CompactTextAtZero a \
+  dump .text HexText final_iosystem_text.mem \
+  dump .data HexText final_iosystem_data.mem \
+  dump .text SegmentWindow final_iosystem_s.txt \
+  project.s
+
+
+add_files ./final_iosystem_text.mem
+add_files ./final_iosystem_data.mem
+set_property generic "TEXT_MEMORY_FILENAME=final_iosystem_text.mem DATA_MEMORY_FILENAME=final_iosystem_data.mem" [get_filesets sim_1]
+
+open_run impl_1
+
+write_checkpoint project.dcp -force
+
+vivado -mode batch -source ../resources/load_mem.tcl -tclargs updateFont project.dcp project_font.txt project_font.bit project_font.dcp
+
+vivado -mode batch -source ../resources/load_mem.tcl -tclargs updateBackground project_font.dcp project_background.txt project_background.bit project_background.dcp
+
+vivado -mode batch -source ../resources/load_mem.tcl -tclargs updateMem project_background.dcp final_iosystem_text.mem final_iosystem_data.mem project.bit

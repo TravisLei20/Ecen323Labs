@@ -1,0 +1,13 @@
+Race to the Hooman!
+
+You are a happy dog that has been in the back yard for way too long without your hooman.
+Your objective is to run as fast as you can to your hooman whom upon your arrival will give you your favorite chew toy.
+
+Use the right button to run right.
+Use the up button to run up.
+Use the left button to run left.
+Use the down button to run right.
+
+Use the switches to display a fun light above.
+
+Now hurry! Run to your hooman.

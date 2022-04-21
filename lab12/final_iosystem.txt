@@ -1,0 +1,158 @@
+ Address    Code        Basic                     Source
+
+0x00000000  0x00004137  lui x2,0x00000004     84       li sp, 0x3ffc
+0x00000004  0xffc10113  addi x2,x2,0xfffffffc      
+0x00000008  0x000021b7  lui x3,0x00000002     88   	lui gp, 2
+0x0000000c  0x00008237  lui x4,0x00000008     90       li tp, 0x7f00
+0x00000010  0xf0020213  addi x4,x4,0xffffff00      
+0x00000014  0x00008437  lui x8,0x00000008     92       li s0, 0x8000
+0x00000018  0x00040413  addi x8,x8,0x00000000      
+0x0000001c  0x1d4000ef  jal x1,0x000000ea     96       jal ra, SET_COLOR_FROM_STARTING_LOC
+0x00000020  0x00022c23  sw x0,0x00000018(x4)  101      sw x0, 0x18(tp)
+0x00000024  0x02022823  sw x0,0x00000030(x4)  102      sw x0, 0x30(tp)
+0x00000028  0x0041a283  lw x5,0x00000004(x3)  105      lw t0, %lo(ENDING_CHARACTER)(gp)                   # Load character value to write
+0x0000002c  0x00c1a303  lw x6,0x0000000c(x3)  106      lw t1, %lo(ENDING_CHARACTER_LOC)(gp)               # Load address of character location
+0x00000030  0x00532023  sw x5,0x00000000(x6)  107      sw t0, 0(t1)
+0x00000034  0x00008537  lui x10,0x00000008    110      li a0, 0x8204
+0x00000038  0x20450513  addi x10,x10,0x0000020     
+0x0000003c  0x00100593  addi x11,x0,0x00000001111      li a1, 0x1
+0x00000040  0x154000ef  jal x1,0x000000aa     112      jal MOVE_CHARACTER
+0x00000044  0x030000ef  jal x1,0x00000018     117      jal ra, PROCESS_BUTTONS
+0x00000048  0xfea00ee3  beq x0,x10,0xfffffffe 120      beq x0, a0, PROC_BUTTONS
+0x0000004c  0x124000ef  jal x1,0x00000092     123      jal REACH_END
+0x00000050  0xfd1ff06f  jal x0,0xffffffe8     124      j RESTART
+0x00000054  0x03022283  lw x5,0x00000030(x4)  132      lw t0, 0x30(tp)
+0x00000058  0x06400313  addi x6,x0,0x00000064 133      li t1, 100
+0x0000005c  0x00531a63  bne x6,x5,0x0000000a  134      bne t1, t0, UT_DONE
+0x00000060  0x02022823  sw x0,0x00000030(x4)  136      sw x0, 0x30(tp)
+0x00000064  0x01822283  lw x5,0x00000018(x4)  137      lw t0, 0x18(tp)
+0x00000068  0x00128293  addi x5,x5,0x00000001 138      addi t0, t0, 1
+0x0000006c  0x00522c23  sw x5,0x00000018(x4)  139      sw t0, 0x18(tp)
+0x00000070  0x00008067  jalr x0,x1,0x00000000 141      jalr x0, ra, 0
+0x00000074  0xffc10113  addi x2,x2,0xfffffffc 149  	addi sp, sp, -4	    # Make room to save values on the stack
+0x00000078  0x00112023  sw x1,0x00000000(x2)  150  	sw ra, 0(sp)		# Copy return address to stack
+0x0000007c  0xfd9ff0ef  jal x1,0xffffffec     156      jal UPDATE_TIMER
+0x00000080  0x02422283  lw x5,0x00000024(x4)  157      lw t0, 0x24(tp)
+0x00000084  0xfe501ce3  bne x0,x5,0xfffffffc  159      bne x0, t0, PB_1
+0x00000088  0xfcdff0ef  jal x1,0xffffffe6     165      jal UPDATE_TIMER
+0x0000008c  0x02422283  lw x5,0x00000024(x4)  166      lw t0, 0x24(tp)
+0x00000090  0xfe500ce3  beq x0,x5,0xfffffffc  168      beq x0, t0, PB_2
+0x00000094  0x0081a483  lw x9,0x00000008(x3)  173      lw s1, %lo(MOVING_CHARACTER_LOC)(gp)               # Load address current character
+0x00000098  0x00800313  addi x6,x0,0x00000008 176      addi t1, x0, 0x08
+0x0000009c  0x02629463  bne x5,x6,0x00000014  177      bne t0, t1, PB_CHECK_BTNL
+0x000000a0  0x04c00393  addi x7,x0,0x0000004c 179      li t2, 76
+0x000000a4  0x1fc00293  addi x5,x0,0x000001fc 180      li t0, 0x1fc
+0x000000a8  0x0092f333  and x6,x5,x9          181      and t1, t0, s1                # Mask bits in address of column 
+0x000000ac  0x00235313  srli x6,x6,0x00000002 182      srli t1, t1, 2     # Shift down to get column number
+0x000000b0  0x0a730063  beq x6,x7,0x00000050  183      beq t1, t2, PB_DONE_BTN_CHECK # Last column, skip
+0x000000b4  0x00448513  addi x10,x9,0x00000004184      addi a0, s1, 4                # Increment pointer
+0x000000b8  0x00300593  addi x11,x0,0x00000003185      li a1, 0x3
+0x000000bc  0x0d8000ef  jal x1,0x0000006c     186      jal MOVE_CHARACTER
+0x000000c0  0x0900006f  jal x0,0x00000048     187      j PB_DONE_BTN_CHECK
+0x000000c4  0x00200313  addi x6,x0,0x00000002 190      addi t1, x0, 0x02
+0x000000c8  0x02629263  bne x5,x6,0x00000012  191      bne t0, t1, PB_CHECK_BTND
+0x000000cc  0x1fc00293  addi x5,x0,0x000001fc 193      li t0, 0x1fc
+0x000000d0  0x0092f333  and x6,x5,x9          194      and t1, t0, s1               # Mask bits in address of column 
+0x000000d4  0x00235313  srli x6,x6,0x00000002 195      srli t1, t1, 2    # Shift down to get column number
+0x000000d8  0x06600c63  beq x0,x6,0x0000003c  196      beq x0, t1, PB_DONE_BTN_CHECK # Too far left, skip
+0x000000dc  0xffc48513  addi x10,x9,0xfffffffc197      addi a0, s1, -4              # Decrement pointer
+0x000000e0  0x00300593  addi x11,x0,0x00000003198      li a1, 0x3
+0x000000e4  0x0b0000ef  jal x1,0x00000058     199      jal MOVE_CHARACTER
+0x000000e8  0x0680006f  jal x0,0x00000034     200      j PB_DONE_BTN_CHECK
+0x000000ec  0x00400313  addi x6,x0,0x00000004 203      addi t1, x0, 0x04
+0x000000f0  0x02629663  bne x5,x6,0x00000016  204      bne t0, t1, PB_CHECK_BTNU
+0x000000f4  0x01d00393  addi x7,x0,0x0000001d 206      li t2, 29
+0x000000f8  0x000042b7  lui x5,0x00000004     207      li t0, 0x3e00
+0x000000fc  0xe0028293  addi x5,x5,0xfffffe00      
+0x00000100  0x0092f333  and x6,x5,x9          208      and t1, t0, s1                 # Mask bits in address of row 
+0x00000104  0x00935313  srli x6,x6,0x00000009 209      srli t1, t1, 9         # Shift down to get column number
+0x00000108  0x04735463  bge x6,x7,0x00000024  210      bge t1, t2, PB_DONE_BTN_CHECK   # Too far up, skip
+0x0000010c  0x20048513  addi x10,x9,0x00000200211      addi a0, s1, 512               # Increment pointer
+0x00000110  0x00300593  addi x11,x0,0x00000003212      li a1, 0x3
+0x00000114  0x080000ef  jal x1,0x00000040     213      jal MOVE_CHARACTER
+0x00000118  0x0380006f  jal x0,0x0000001c     214      j PB_DONE_BTN_CHECK
+0x0000011c  0x01000313  addi x6,x0,0x00000010 217      addi t1, x0, 0x10
+0x00000120  0x02629463  bne x5,x6,0x00000014  218      bne t0, t1, PB_CHECK_BTNC
+0x00000124  0x000042b7  lui x5,0x00000004     220      li t0, 0x3e00
+0x00000128  0xe0028293  addi x5,x5,0xfffffe00      
+0x0000012c  0x0092f333  and x6,x5,x9          221      and t1, t0, s1                 # Mask bits in address of row 
+0x00000130  0x00935313  srli x6,x6,0x00000009 222      srli t1, t1, 9         # Shift down to get column number
+0x00000134  0x00030e63  beq x6,x0,0x0000000e  223      beq t1, x0, PB_DONE_BTN_CHECK   # Too far up, skip
+0x00000138  0xe0048513  addi x10,x9,0xfffffe00224      addi a0, s1, -512               # Increment pointer
+0x0000013c  0x00300593  addi x11,x0,0x00000003225      li a1, 0x3
+0x00000140  0x054000ef  jal x1,0x0000002a     226      jal MOVE_CHARACTER
+0x00000144  0x00c0006f  jal x0,0x00000006     227      j PB_DONE_BTN_CHECK
+0x00000148  0x00100313  addi x6,x0,0x00000001 231      addi t1, x0, 0x01
+0x0000014c  0x00629263  bne x5,x6,0x00000002  233      bne t0, t1, PB_DONE_BTN_CHECK
+0x00000150  0x00c1a303  lw x6,0x0000000c(x3)  239      lw t1, %lo(ENDING_CHARACTER_LOC)(gp)               # Load address of end location
+0x00000154  0x00a31663  bne x6,x10,0x00000006 240      bne t1, a0, PB_EXIT_NOT_AT_END
+0x00000158  0x00100513  addi x10,x0,0x00000001242      addi a0, x0, 1
+0x0000015c  0x00000463  beq x0,x0,0x00000004  243      beq x0, x0, PB_EXIT
+0x00000160  0x00000533  add x10,x0,x0         247      mv a0, x0
+0x00000164  0x00012083  lw x1,0x00000000(x2)  251  	lw ra, 0(sp)		# Restore return address
+0x00000168  0x00410113  addi x2,x2,0x00000004 252  	addi sp, sp, 4		# Update stack pointer
+0x0000016c  0x00008067  jalr x0,x1,0x00000000 254      jalr x0, ra, 0
+0x00000170  0x0f0f12b7  lui x5,0x0000f0f1     262      li t0, 0x0f0f0fDA
+0x00000174  0xfda28293  addi x5,x5,0xffffffda      
+0x00000178  0x00c1a303  lw x6,0x0000000c(x3)  263      lw t1, %lo(ENDING_CHARACTER_LOC)(gp)               # Load address of end location
+0x0000017c  0x00532023  sw x5,0x00000000(x6)  264      sw t0, 0(t1)
+0x00000180  0x02422283  lw x5,0x00000024(x4)  268      lw t0, 0x24(tp)
+0x00000184  0xfe501ee3  bne x0,x5,0xfffffffe  270      bne x0, t0, RE_1
+0x00000188  0x02422283  lw x5,0x00000024(x4)  274      lw t0, 0x24(tp)
+0x0000018c  0xfe500ee3  beq x0,x5,0xfffffffe  276      beq x0, t0, RE_2
+0x00000190  0x00008067  jalr x0,x1,0x00000000 278      jalr x0, ra, 0
+0x00000194  0x00052303  lw x6,0x00000000(x10) 290      lw t1, 0(a0)
+0x00000198  0x0041a383  lw x7,0x00000004(x3)  292      lw t2, %lo(DISPLACED_CHARACTER)(gp)
+0x0000019c  0x0081ae03  lw x28,0x00000008(x3) 294      lw t3,%lo(MOVING_CHARACTER_LOC)(gp)
+0x000001a0  0x0015f293  andi x5,x11,0x00000001297      andi t0, a1, 0x1
+0x000001a4  0x00028e63  beq x5,x0,0x0000000e  298      beq t0, x0, MC_RESTORE_OLD
+0x000001a8  0x0001a283  lw x5,0x00000000(x3)  300      lw t0, %lo(MOVING_CHARACTER)(gp)
+0x000001ac  0x00552023  sw x5,0x00000000(x10) 302      sw t0, 0(a0)
+0x000001b0  0x00818293  addi x5,x3,0x00000008 304      addi t0,gp,%lo(MOVING_CHARACTER_LOC)
+0x000001b4  0x00a2a023  sw x10,0x00000000(x5) 305      sw a0, 0(t0)
+0x000001b8  0x00418293  addi x5,x3,0x00000004 307      addi t0,gp,%lo(DISPLACED_CHARACTER)
+0x000001bc  0x0062a023  sw x6,0x00000000(x5)  309      sw t1,0(t0)
+0x000001c0  0x0025f293  andi x5,x11,0x00000002316      andi t0, a1, 0x2
+0x000001c4  0x00028463  beq x5,x0,0x00000004  317      beq t0, x0, MC_EXIT
+0x000001c8  0x007e2023  sw x7,0x00000000(x28) 319      sw t2,0(t3)
+0x000001cc  0x00008067  jalr x0,x1,0x00000000 322      jalr x0, ra, 0
+0x000001d0  0x0001a283  lw x5,0x00000000(x3)  325      lw t0, %lo(MOVING_CHARACTER)(gp)                   # Load character value to write
+0x000001d4  0x00552023  sw x5,0x00000000(x10) 326      sw t0, 0(a0)                                       # Write new character
+0x000001d8  0x0081a303  lw x6,0x00000008(x3)  328      lw t1, %lo(MOVING_CHARACTER_LOC)(gp)               # Load address of old character location
+0x000001dc  0x02000293  addi x5,x0,0x00000020 329      addi t0, x0, 0x20
+0x000001e0  0x00532023  sw x5,0x00000000(x6)  330      sw t0, 0(t1)                                        # Write space in old location
+0x000001e4  0x00818313  addi x6,x3,0x00000008 332      addi t1,gp,%lo(MOVING_CHARACTER_LOC)
+0x000001e8  0x00a32023  sw x10,0x00000000(x6) 333      sw a0, 0(t1)
+0x000001ec  0x00008067  jalr x0,x1,0x00000000 335      jalr x0, ra, 0
+0x000001f0  0x000082b7  lui x5,0x00000008     343      li t0, 0x8204                                # Load address of location
+0x000001f4  0x20428293  addi x5,x5,0x00000204      
+0x000001f8  0x0002a303  lw x6,0x00000000(x5)  344      lw t1, 0(t0)                                       # Read value
+0x000001fc  0x00835313  srli x6,x6,0x00000008 346      srli t1, t1, 8
+0x00000200  0x02622a23  sw x6,0x00000034(x4)  347      sw t1, 0x34(tp)  # Write the new color values
+0x00000204  0x00600533  add x10,x0,x6         349      mv a0, t1
+0x00000208  0x00008067  jalr x0,x1,0x00000000 350      jalr x0, ra, 0
+0x0000020c  0xffc10113  addi x2,x2,0xfffffffc 362  	addi sp, sp, -4	    # Make room to save values on the stack
+0x00000210  0x00112023  sw x1,0x00000000(x2)  363  	sw ra, 0(sp)		# This function uses 2 callee save regs
+0x00000214  0x00422383  lw x7,0x00000004(x4)  366      lw t2, 0x4(tp)                            # SET_COLOR_FROM_SWITCHES
+0x00000218  0x000102b7  lui x5,0x00000010     368      li t0, 0xffff
+0x0000021c  0xfff28293  addi x5,x5,0xffffffff      
+0x00000220  0x0053f3b3  and x7,x7,x5          369      and t2, t2, t0
+0x00000224  0xfff3ce13  xori x28,x7,0xffffffff371      xori t3, t2, -1
+0x00000228  0x005e7e33  and x28,x28,x5        373      and t3, t3, t0
+0x0000022c  0x00ce1e13  slli x28,x28,0x0000000375      slli t3, t3, 12
+0x00000230  0x01c3e3b3  or x7,x7,x28          377      or t2, t2, t3
+0x00000234  0x02722a23  sw x7,0x00000034(x4)  378      sw t2, 0x34(tp)  # Write the new color values
+0x00000238  0x00700533  add x10,x0,x7         381      mv a0, t2
+0x0000023c  0x00012083  lw x1,0x00000000(x2)  383  	lw ra, 0(sp)		# Restore return address
+0x00000240  0x00410113  addi x2,x2,0x00000004 384  	addi sp, sp, 4		# Update stack pointer
+0x00000244  0x00008067  jalr x0,x1,0x00000000 386      jalr x0, ra, 0
+0x00000248  0x00a002b3  add x5,x0,x10         401      mv t0, a0
+0x0000024c  0x00800333  add x6,x0,x8          402      add t1, x0, s0              # Pointer to VGA space that will change
+0x00000250  0x000013b7  lui x7,0x00000001     404      li t2, 0x1000
+0x00000254  0x00038393  addi x7,x7,0x00000000      
+0x00000258  0x00532023  sw x5,0x00000000(x6)  406      sw t0, 0(t1)
+0x0000025c  0xfff38393  addi x7,x7,0xffffffff 407      addi t2, t2, -1             # Decrement counter
+0x00000260  0x00038663  beq x7,x0,0x00000006  408      beq t2, x0, FVC_2           # Exit loop when done
+0x00000264  0x00430313  addi x6,x6,0x00000004 409      addi t1, t1, 4              # Increment memory pointer by 4 to next character address
+0x00000268  0xff1ff06f  jal x0,0xfffffff8     410      jal x0, FVC_1
+0x0000026c  0x00008067  jalr x0,x1,0x00000000 412      jalr x0, ra, 0

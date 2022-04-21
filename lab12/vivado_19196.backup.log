@@ -1,0 +1,1174 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Wed Apr 13 19:22:56 2022
+# Process ID: 19196
+# Current directory: /auto/fsd/leicr/323-labs-TravisLei20/lab12
+# Command line: vivado -mode batch -source ../resources/load_mem.tcl -tclargs updateFont project.dcp project_font.txt project_font.bit project_font.dcp
+# Log file: /auto/fsd/leicr/323-labs-TravisLei20/lab12/vivado.log
+# Journal file: /auto/fsd/leicr/323-labs-TravisLei20/lab12/vivado.jou
+#-----------------------------------------------------------
+source ../resources/load_mem.tcl
+# set version "1.7"
+# set debug 0
+# proc get_brams {} {
+#     return [get_cells -hierarchical -filter { PRIMITIVE_TYPE =~ BMEM.bram.* }]
+# }
+# proc getBRAMDataList { bram {wordSize 32} } {
+# 
+# 	# Determine how many property strings the BRAM has
+# 	set numStrings [ BRAM_property_size $bram]
+# 	set numWords [ expr 256 / $wordSize ]
+# 	set nibblesPerWord [expr $wordSize / 4]
+# 	for {set i 0} {$i < $numStrings} {incr i} {
+# 		set property_name INIT_[format %02X $i]
+#         set pString [get_property $property_name  [get_cells $bram] ]
+# 		set propertyStringSize [string length $pString ]
+# 		# The string has 256 bits or 64 characters. Iterate over substrings
+#         puts "$property_name"
+# 		puts "$pString"
+# 		for {set j 0} {$j < $numWords} { incr j} {
+# 			# The first nibble is associated with the last character
+# 			set firstNibble [expr $j * $nibblesPerWord ]
+# 			set lastChar [expr $propertyStringSize - $firstNibble - 1]
+# 			set firstChar [expr $lastChar - $nibblesPerWord + 1]
+# 			set word [string range $pString $firstChar $lastChar ]
+# 			#puts "$word"
+# 			lappend subList $word
+# 		}
+# 	}
+# 	return $subList
+# }
+# proc dumpMemory { {bramBaseName instruction_reg} { filehandle stdout } } {
+# 	set bram0 [join [list $bramBaseName _0] ""]
+# 	set bram1 [join [list $bramBaseName _1] ""]
+# 
+# 	set bram0List [ getBRAMDataList $bram0 16 ]
+# 	set bram1List [ getBRAMDataList $bram1 16 ]
+# 
+# 	# Print a header
+# 	puts $filehandle "// Data for memories: $bram0 and $bram1"
+# 	for {set i 0} { $i < [llength $bram0List]} {incr i} {
+# 		set lowWord [ lindex $bram0List $i ]
+# 		set highWord [ lindex $bram1List $i ]
+# 		puts $filehandle "$highWord$lowWord"
+# 	}
+# }
+# proc load_bram_32hextext {bram_cell_name filename} {
+# 	# Get all the words in the file
+# 	set word_array [parse_32bit_hex $filename]
+# 	# Determine size of BRAM
+# 	set num_init_strings [BRAM_property_size $bram_cell_name]
+# 	# Create the property strings
+# 	set data_strings [generate_ascii_string_256 $word_array $num_init_strings]
+# 	# set the properties
+# 	set_BRAM_INIT $data_strings $bram_cell_name
+# }
+# proc load_brams_interleaved_32hextext {bram_cells filename} {
+# 	global debug
+# 	if {$debug > 0} { puts "load_brams_interleaved_32hextext $bram_cells $filename" }
+# 	# Get all the words in the file
+# 	set word_array [parse_32bit_hex $filename]
+# 
+# 	set num_brams [llength $bram_cells]
+# 	set interleave_word_size [expr 32 / $num_brams]
+# 	#set mask [expr 0xffffffff >> $interleave_word_size]
+# 	
+# 	# Iterate over all of the BRAMs
+# 	set pos 0
+# 	foreach bram $bram_cells {
+# 		puts "Processing BRAM '$bram' in position $pos"
+# 		# Determine size of BRAM
+# 		set num_init_strings [BRAM_property_size $bram]
+# 		set bram_data  [extract_interleave_data $word_array $interleave_word_size $pos ]
+# 		
+# 		#set bram_data [extract_interleave_data $word_array $interleave_word_size $pos]
+# 		
+# 		# Create the property strings
+# 		set data_strings [generate_ascii_string_256 $bram_data $num_init_strings]
+# 		#puts "$data_strings"
+# 		# set the properties
+# 		set_BRAM_INIT $data_strings $bram
+# 		incr pos
+# 	}
+# 	
+# }
+# proc load_bram_8bintext {bram_cell_name filename} {
+# 	# Get all the bytes in the file
+# 	set byte_array [parse_8bit_binary $filename]
+# 	# Convert array of bytes to array of words
+# 	set word_array [create_32bitarray_from_8bitarray $byte_array]
+# 	# Determine size of BRAM
+# 	set num_init_strings [BRAM_property_size $bram_cell_name]
+# 	# Create the property strings
+# 	set data_strings [generate_ascii_string_256 $word_array $num_init_strings]
+# 	# set the properties
+# 	set_BRAM_INIT $data_strings $bram_cell_name
+# }
+# proc load_bram_textmap {bram_cell_name filename} {
+# 	# Get all the bytes in the file
+# 	set byte_array [parse_character_map $filename]
+# 	# Convert array of bytes to array of words
+# 	set word_array [create_32bitarray_from_8bitarray $byte_array]
+# 	# Determine size of BRAM
+# 	set num_init_strings [BRAM_property_size $bram_cell_name]
+# 	# Create the property strings
+# 	set data_strings [generate_ascii_string_256 $word_array $num_init_strings]
+# 	# set the properties
+# 	set_BRAM_INIT $data_strings $bram_cell_name
+# }
+# proc extract_interleave_data {word_array interleave_bits interleave_position} {
+# 	global debug
+# 	if {$debug > 0} { puts "* extract_interleave_data $interleave_bits $interleave_position" }
+# 	if {$debug > 0} { puts "$word_array" }
+# 	# determine the number of interleave slots
+# 	set interleave_slots [expr 32 / $interleave_bits]
+# 	if {$debug > 0} { puts "interleave_slots $interleave_slots" }
+# 	# Example: 8 interlave bits, interleave position 2:  
+# 	#   (0xffffffff >> (32-8) = 0xff) << (8 * 2) = 0x00ff0000
+# 	set mask [expr (0xffffffff >> (32- $interleave_bits)) << ($interleave_bits * $interleave_position)]
+# 	if {$debug > 0} { puts "Mask=[format %08X $mask]" }
+# 	
+# 	# current interleave position in the word (will cycle between 0 and interleave_slots-1)
+# 	set word_pos 0
+# 	foreach word $word_array {
+# 		if {$debug > 2} { puts "word= $word" }
+# 		# extract interleave region
+# 		set masked_word [expr $word & $mask]
+# 		#puts "Masked Data [format %08X $masked_word]"
+# 		# Shift the masked data down to 0
+# 		set interleaved_data [expr $masked_word >> ($interleave_bits * $interleave_position) ]
+# 		#puts "Word [format %08X $word], shifted data [format %08X $interleaved_data]"
+# 		if {$word_pos == 0} {
+# 			# Start over with a new word
+# 			set build_word $interleaved_data
+# 		} else {
+# 			# insert interleaved word
+# 			set build_word [expr $build_word | ($interleaved_data << ($word_pos * $interleave_bits)) ]
+# 		}
+# 		if {$word_pos == [expr $interleave_slots-1]} {
+# 			# Save word and start over`
+# 			set word_pos 0
+# 			lappend new_word_array $build_word
+#         	#puts [set hex_value [format %08X $build_word] ]
+# 		} else {
+# 			incr word_pos
+# 		}
+# 	}
+# 	# At the end of the list, add the last remaining word (if it didn't complete)
+# 	if {$word_pos != 0} {
+# 		lappend new_word_array $build_word
+# 	}
+# 	return $new_word_array
+# }
+# proc parse_32bit_hex {file} {
+# 	global debug
+# 	if {$debug > 0 } { puts "* parse_32bit_hex $file" }
+# 
+# 	# Read the file
+#     set a [open $file]
+#     set lines [split [read $a] "\n"]
+#     close $a;
+# 
+# 	# Create an array of 32-bit text hex strings
+# 	set word_array {}
+#     foreach line $lines {
+# 		# Skip comment lines
+# 		if {[regexp  {^(\s*)//.*$} $line]} {
+# 			if {$debug > 1} { puts "comment line: $line"  }
+# 			continue
+# 		}
+# 		# Filter text after the comments
+# 		set filtered [regsub -all -line {^(.*)//.*$} $line {\1} ]
+# 		# Remove leading white space?
+# 		set hex_word [regsub -all -line {^[ \t\r]*(.*\S)?[ \t\r]*$} $filtered {\1}]
+# 		if {$debug > 2} { puts "hex_word: $hex_word" }
+# 		if {[string length $hex_word] > 0} {
+# 			# Need to do a better job parsing line (make sure it is hex, remove early white space, etc.)
+# 			# Make sure there are 8 digits, etc.
+# 			set value [string range $hex_word 0 7]
+# 			set bin_value [scan $value "%x"]
+# 			#puts "$value - $bin_value"
+# 			lappend word_array $bin_value
+# 		}
+#     }
+# 	return $word_array
+# }
+# proc parse_8bit_binary {file} {
+#     set a [open $file]
+#     set lines [split [read $a] "\n"]
+#     close $a;
+# 
+# 	# Create an array of bytes
+# 	set byte_list {}
+#     foreach line $lines {
+# 		set filtered [regsub -all -line {^(.*)//.*$} $line {\1} ]
+# 		set filtered [regsub -all -line {^[ \t\r]*(.*\S)?[ \t\r]*$} $filtered {\1}]
+# 		if {[string length $filtered] > 0} {
+# 			if {[regexp {\d\d\d\d\d\d\d\d} $filtered data]} {
+# 				set num [binary_text_to_number $data]
+# 				#puts "$data - $num"
+# 				lappend byte_list $num
+# 			}
+# 		}
+# 	}
+# 	return $byte_list
+# }
+# proc parse_character_map {file} {
+#     set a [open $file]
+#     set lines [split [read $a] "\n"]
+#     close $a;
+# 
+# 	# Create an array of bytes
+# 	set byte_list {}
+#     foreach line $lines {
+# 		puts $line
+# 		# Process each line
+# 		for { set i 0} { $i < [string length $line] && $i < 128 } { incr i} {
+# 			set c [string index $line $i ]
+# 			scan $c "%c" num 
+# 			lappend byte_list $num
+# 			# check to see if this is the last character in the line.
+# 			# If so, pad with zeros so there is 128 bytes per line
+# 			if {$i == [expr [string length $line] - 1]} {
+# 				for {set j [expr $i+1]} { $j < 128} { incr j} {
+# 					lappend byte_list 0
+# 				}
+# 			}
+# 		}
+# 	}
+# 	return $byte_list
+# }
+# proc create_32bitarray_from_8bitarray byte_array {
+# 	# Organize bytes as words
+# 	set byte_index 0
+# 	set word_list {}
+# 	foreach byte $byte_array {
+#         if {$byte_index % 4 == 0} {
+#             set word $byte
+# 			set byte_index 0
+#         } else {
+#             set word [expr $word + ($byte<<(8*$byte_index))]
+#         }
+# 		#puts "[format %02X $byte]-[format %08X $word]"
+#         incr byte_index
+#         if {$byte_index % 4 == 0} {
+# 			#puts "![format %08X $word]"
+#             lappend word_list $word
+#         }
+# 		
+# 	}
+# 	return $word_list
+# }
+# proc generate_ascii_string_256 {word_array {require 128}} {
+#     set word_index 0
+# 	set hex_strings {}
+# 
+# 	# Create 256 bit hex string from array of 32 bit data
+# 	foreach value $word_array {
+# 		# convert to ascii hex
+# 		#puts $value
+#         set hex_value [format %08X $value]
+#         if {$word_index % 8 == 0} {
+#             set string_256 $hex_value
+#         } else {
+#             set string_256 ${hex_value}${string_256}
+#         }
+#         incr word_index
+#         if {$word_index % 8 == 0} {
+# 			#puts "!$string_256"
+#             lappend hex_strings $string_256
+#         }
+# 	}
+# 	
+# 	# At this point, we may have a half finished string. Finish it up with zeros
+#     set zero_value [format %08X 0]	
+# 	#set value "00000000"
+# 	for {} {$word_index % 8 != 0} {} {
+# 		set string_256 ${zero_value}${string_256}
+#         incr word_index
+#         if {$word_index % 8 == 0} {
+#             lappend hex_strings $string_256
+# 			#puts "!$string_256"
+#         }
+# 	}
+# 
+# 	# add appending zero strings if needed
+# 	if {$require > [llength $hex_strings]} {
+#         set empty_string [format %064X 0]
+# 		for {set i [llength $hex_strings]} {$i < $require} {incr i} {
+#             lappend hex_strings $empty_string
+# 		}
+# 	}
+# 
+# 	return $hex_strings
+# }
+# proc BRAM_property_size {cell_name} {
+# 	set REF_NAME [get_property REF_NAME [get_cells $cell_name]]
+# 	puts "$cell_name $REF_NAME"
+# 	if {[string equal $REF_NAME "RAMB18E1"]} {
+# 		return 64
+# 	} elseif {[string equal $REF_NAME "RAMB36E1"]} {
+# 		return 128
+# 	} else {
+# 		return 0
+# 	}
+# 	
+# }
+# proc set_BRAM_INIT {ascii_string_256_array cell_name} {
+# 	set init_index 0
+# 	foreach init_string $ascii_string_256_array {
+# 		set property_name INIT_[format %02X $init_index]
+#         incr init_index
+#         puts "$property_name=$init_string"
+#         set_property $property_name $init_string [get_cells $cell_name]
+# 	}
+# }
+# proc set_BRAM_INITP {ascii_string_256_array cell_name} {
+# 	set init_index 0
+# 	foreach init_string $ascii_string_256_array {
+# 		set property_name INITP_[format %02X $init_index]
+#         incr init_index
+#         puts "$property_name=$init_string"
+#         set_property $property_name $init_string [get_cells $cell_name]
+# 	}
+# }
+# proc dump_BRAM_contents {cell_name} {
+# 	set init_strings [BRAM_property_size $cell_name]
+# 	for {set i 0} {$i < $init_strings} {incr i} {
+# 		set property_name INIT_[format %02X $i]
+# 		set property [get_property $property_name [get_cells $cell_name]]
+# 		puts "$property_name $property"
+# 	}
+# }
+# proc binary_text_to_number bintext {
+# 	set num 0
+# 	set multiplier 1
+# 	set len [string length $bintext]
+# 	#puts "# $bintext ($len)"
+# 	for {set i 0} {$i < $len} {incr i} {
+# 		set c_index [expr $len - $i - 1]
+# 		set c [string index $bintext $c_index] 
+# 		#puts "$c_index $c"
+# 		if {$c == "1"} {
+# 			set num [expr $num + $multiplier]
+# 			#puts "  $i $multiplier"
+# 		}
+# 		set multiplier [expr $multiplier * 2]
+# 	}
+# 	return $num
+# }
+# proc write_bit {bitfile} {
+#     write_bitstream -force $bitfile
+# }
+# proc load_mem_32 {cell_name file} {
+#     set a [open $file]
+#     set lines [split [read $a] "\n"]
+#     close $a;                          # Saves a few bytes :-)
+# 
+# 	# Create an array of 32-bit text hex strings
+# 	set word_array {}
+#     foreach line $lines {
+# 		# Remove comments
+# 		set filtered [regsub -all -line {^(.*)//.*$} $line {\1} ]
+# 		set filtered [regsub -all -line {^[ \t\r]*(.*\S)?[ \t\r]*$} $filtered {\1}]
+# 		set line $filtered
+# 		# Need to do a better job parsing line (make sure it is hex, remove early white space, etc.)
+# 		# Make sure there are 8 digits, etc.
+#         set value [string range $line 0 7]
+# 		lappend word_array $value
+#         # if {$word_index % 8 == 0} {
+#             # set input_word $value
+#         # } else {
+#             # set input_word ${value}${input_word}
+#         # }
+#         # incr word_index
+#         
+#         # if {$word_index % 8 == 0} {
+#             # set index [format %02X $init_index]
+#             # puts $index
+#             # incr init_index
+#             # puts $input_word
+#             # set_property INIT_$index $input_word [get_cells $cell_name]
+#         # }
+#     }
+# 	puts $word_array
+# 
+#     set word_index 0
+# 	set properties {}
+# 	# Create property strings from those words that were parsed
+# 	foreach value $word_array {
+#         if {$word_index % 8 == 0} {
+#             set property $value
+#         } else {
+#             set property ${value}${property}
+#         }
+#         incr word_index
+#         if {$word_index % 8 == 0} {
+#             lappend properties $property
+#         }
+# 	}
+# 	# flush out the last property string with zeros if it wasn't finished
+# 	set value "00000000"
+# 	for {} {$word_index % 8 != 0} {
+# 		set property ${value}${property}
+#         incr word_index
+#         if {$word_index % 8 == 0} {
+#             lappend properties $property
+#         }
+# 	}
+# 	
+# 	# Add all zeros lines
+# 	
+#     for {} {$word_index < 1024} {} {
+#        set value "00000000"
+#         if {$word_index % 8 == 0} {
+#             set input_word $value
+#         } else {
+#             set input_word ${value}${input_word}
+#         }
+#         incr word_index
+#         if {$word_index % 8 == 0} {
+#             set index [format %02X $init_index]
+#             puts $index
+#             incr init_index
+#             puts $input_word
+#             set_property INIT_$index $input_word [get_cells $cell_name]
+#         }
+#     }
+# 
+#     for {} {$word_index < 1024} {} {
+#        set value "00000000"
+#         if {$word_index % 8 == 0} {
+#             set input_word $value
+#         } else {
+#             set input_word ${value}${input_word}
+#         }
+#         incr word_index
+#         if {$word_index % 8 == 0} {
+#             set index [format %02X $init_index]
+#             puts $index
+#             incr init_index
+#             puts $input_word
+#             set_property INIT_$index $input_word [get_cells $cell_name]
+#         }
+#     }
+# }
+# proc load_mem_font {cell_name file} {
+#     set a [open $file]
+#     set lines [split [read $a] "\n"]
+#     close $a;                          # Saves a few bytes :-)
+#     set byte_index 0
+#     set init_index 0
+# 	set debug 1
+# 
+# 	#set byte_list {}
+# 	# Parse the lines and convert into hex bytes
+#     foreach line $lines {
+# 		# Filter out all text after a comment
+# 		#set filtered [regsub -all -line {^(.*)//.*$} $line {\1} ]
+# 		#puts "before:$line"
+# 		#set filtered [regsub -all -line {^(.*)//} $line {\1} ]
+# 		set replacement ""
+# 		regsub -all -line "//.*$" $line ${replacement} filtered
+# 		#puts "after:$filtered"
+# 		# Get rid of white space before and after the actual text
+# 		set filtered [regsub -all -line {^[ \t\r]*(.*\S)?[ \t\r]*$} $filtered {\1}]
+# 		if {[string length $filtered] > 0} {
+# 			#if {$debug > 0} { puts "$line - $filtered" }
+# 			if {[regexp {\d\d\d\d\d\d\d\d} $filtered data]} {
+# 				set nible2 [string range $data 0 3 ]
+# 				set nible1 [string range $data 4 7 ]
+# 				set hex2 [bin2hex_t $nible2]
+# 				set hex1 [bin2hex_t $nible1]
+# 				#puts "$filtered $data $nible2 $nible1 $hex2 $hex1"
+# 				set byte_val $hex2$hex1
+# 				#puts "$data $hex2 $hex1 $byte_val"
+# 				#lappend byte_list $byte_val
+# 				# Filter comment lines
+# 				#puts "Data"
+# 				
+# 				# Prepare INIT string. There are 
+# 				if {$byte_index %32 == 0} {
+# 					set input_word $byte_val
+# 				} else {
+# 					set input_word ${byte_val}${input_word}
+# 				}
+# 				incr byte_index
+#         
+# 				if {$byte_index % 32 == 0} {
+# 					set index [format %02X $init_index]
+# 					incr init_index
+# 					puts "$index=$input_word"
+# 					set_property INIT_$index $input_word [get_cells $cell_name]
+# 				}				
+# 			}
+# 		} else {
+# 			if {$debug > 0} { puts "skipped line $line" }
+# 		}
+#     }
+# }
+# proc bin2hex_t bin {
+#     array set t {
+# 	0000 0 0001 1 0010 2 0011 3 0100 4
+# 	0101 5 0110 6 0111 7 1000 8 1001 9
+# 	1010 a 1011 b 1100 c 1101 d 1110 e 1111 f
+#     }
+# 	return $t($bin)
+# }
+# proc bin2hex bin {
+#     array set t {
+# 	0000 0 0001 1 0010 2 0011 3 0100 4
+# 	0101 5 0110 6 0111 7 1000 8 1001 9
+# 	1010 10 1011 11 1100 12 1101 13 1110 14 1111 15
+#     }
+# 	return $t($bin)
+# }
+# proc load_brams_dict_32hextext { bramList netBaseName filename} {
+# 
+# 	set bramDict [findDataPorts $bramList $netBaseName]
+# 
+# 	# ASSUME we are broken up into two BRAMS
+# 	global debug
+# 	if {$debug > 0} { puts "load_brams_dict_32hextext $dict $filename" }
+# 	# Get all the words in the file
+# 	set word_array [parse_32bit_hex $filename]
+# 	set len [llength $word_array]
+# 	puts "File $filename is $len in size"
+# 
+# 	# Create two lists for each bram. One is 16 bits for data and the other is 2 bits for parity
+# 	set list16_0 [list]
+# 	set list16_1 [list]
+# 	set list2p_0 [list]
+# 	set list2p_1 [list]
+# 	# Initialize lists to zero and make the correct size
+# 	foreach word $word_array {
+# 		lappend list16_0 0
+# 		lappend list16_1 0
+# 		lappend list2p_0 0
+# 		lappend list2p_1 0
+# 	}
+# 	# Iterate over every bit
+# 	for {set i 0} {$i < 32} {incr i} {
+# 		if {$debug > 2} { puts "bit= $i" }
+# 		set bitLoc [dict get $bramDict $i]
+# 		puts "Bit $i: $bitLoc"
+# 		# Figure out which BRAM to load (look at last character of BRAM name)
+# 		set bram [lindex $bitLoc 0]
+# 		puts "BRAM=$bram"
+# 		if { [string index $bram [expr [string length $bram] - 1]] == "0" } {
+# 			set lowBRAM 1
+# 			puts "lowBRAM"
+# 			set bram0_name $bram
+# 		} else {
+# 			set lowBRAM 0
+# 			puts "highBRAM"
+# 			set bram1_name $bram
+# 		}
+# 		# Split port into index and name
+# 		set mem_pin [lindex $bitLoc 1]
+# 		set match [regexp -all -line  {^.*/(.*\S)\[(\d+)\]$} $mem_pin fullmatch portname index]
+# 		if { $match } {
+# 			puts "D: $portname $index"
+# 			if { $portname == "DOADO" } {
+# 				set dataBit 1
+# 			} else {
+# 				set dataBit 0
+# 			}
+# 		} else {
+# 			puts "WARNING: NO match for $mem_pin"
+# 		}
+# 
+# 		for {set j 0} {$j < [llength $word_array] } {incr j} {
+# 			set word [lindex $word_array $j]
+# 			set fword [format %08X $word]
+# 			set bit [expr (($word & (1 << $i)) >> $i) ]
+# 			if {$word != 0} {
+# 				puts "  $j: Word: $fword Bit: $bit"
+# 			}
+# 			if {$bit} {
+# 				set bit [expr $bit << $index]
+# 				puts "new bit:$bit"
+# 				if {$lowBRAM} {
+# 					if {$dataBit} {
+# 						lset list16_0 $j [expr [lindex $list16_0 $j] | $bit]
+# 					} else {						
+# 						lset list2p_0 $j [expr [lindex $list2p_0 $j] | $bit]
+# 					}
+# 				} else {
+# 					if {$dataBit} {
+# 						lset list16_1 $j [expr [lindex $list16_1 $j] | $bit]
+# 					} else {						
+# 						lset list2p_1 $j [expr [lindex $list2p_1 $j] | $bit]
+# 					}
+# 				}				
+# 			}
+# 		}
+# 	}
+# 	# Print all the data words
+# 	for {set j 0} {$j < [llength $word_array] } {incr j} {
+# 		set word [lindex $word_array $j]
+# 		if {$word != 0} {
+# 			set l16_0 [lindex $list16_0 $j]
+# 			set l16_1 [lindex $list16_1 $j]
+# 			set l2p_0 [lindex $list2p_0 $j]
+# 			set l2p_1 [lindex $list2p_1 $j]
+# 			puts "$j [format %08X $word] [format %08X $l16_0] [format %08X $l16_1] $l2p_0 $l2p_1"
+# 		}
+# 	}
+# 	# Prepare 32-bit arrays from the lists of words from the data array
+# 	set i 0
+# 	set a0 [list]
+# 	set a1 [list]
+# 	for {set j 0} {$j < [llength $word_array] } {incr j 2} {
+# 		set l0_0 [expr [lindex $list16_0 $j]]
+# 		set l1_0 [expr [lindex $list16_1 $j]]
+# 		set jp [expr $j + 1]
+# 		if { $jp < [llength $word_array] } {
+# 			set l0_1 [expr [lindex $list16_0 $jp]]
+# 			set l1_1 [expr [lindex $list16_1 $jp]]
+# 		} else {
+# 			set l0_1 0
+# 			set l1_1 0
+# 		}
+# 		set l0 [expr $l0_0 | ($l0_1 << 16)]
+# 		set l1 [expr $l1_0 | ($l1_1 << 16)]
+# 		#puts "$l0 $l1"
+# 		lappend a0 $l0
+# 		lappend a1 $l1
+# 	}
+# 	set b0strings [generate_ascii_string_256 $a0]
+# 	set b1strings [generate_ascii_string_256 $a1]
+# 	set_BRAM_INIT $b0strings $bram0_name
+# 	set_BRAM_INIT $b1strings $bram1_name
+# 
+# 	# Prepare 32-bit arrays for the parity bits. Each BRAM has 64x4x16 = 4096 parity bits
+# 	# 1024 x 4
+# 	# 
+# 	# Content Initialization - INITP_xx
+# 	# INITP_xx attributes define the initial contents of the memory cells corresponding to
+# 	# DIP/DOP buses (parity bits). By default these memory cells are also initialized to all zeros.
+# 	# The initialization attributes represent the memory contents of the parity bits. The eight
+# 	# initialization attributes are INITP_00 through INITP_07 for the RAMB18E1. The
+# 	# 16 initialization attributes are INITP_00 through INITP_0F for the RAMB36E1. Each
+# 	# INITP_xx is a 64-digit hex-encoded bit vector with a regular INIT_xx attribute behavior.
+# 	# The same formula can be used to calculate the bit positions initialized by a particular
+# 	# INITP_xx attribute.
+# 	set i 0
+# 	set a0 [list]
+# 	set a1 [list]
+# 	for {set j 0} {$j < [llength $word_array] } {incr j} {
+# 		if {[expr $j % 16 == 0]} {
+# 			set p0 0
+# 			set p1 0
+# 		}
+# 		set tp0 [expr [lindex $list2p_0 $j]]
+# 		set tp1 [expr [lindex $list2p_1 $j]]
+# 		set p0 [expr $p0 | ($tp0 << ($j % 16)*2) ]
+# 		set p1 [expr $p1 | ($tp1 << ($j % 16)*2) ]
+# 		if {[expr $j % 16 == 15]} {
+# 			lappend a0 $p0
+# 			lappend a1 $p1
+# 		}
+# 	}
+# 	# Add the last set if it didn't end on a add to list
+# 	# (j got incremented at the end. check the previous j for not being the end of a word)
+# 	if {[expr ($j-1) % 16 != 15]} {
+# 		lappend a0 $p0
+# 		lappend a1 $p1
+# 	}
+# 	puts "a0 strings [llength $a0] [llength $word_array] $j"
+# 	set b0pstrings [generate_ascii_string_256 $a0 16]
+# 	set b1pstrings [generate_ascii_string_256 $a1 16]
+# 	puts "p strings [llength $b0pstrings]"
+# 	set_BRAM_INITP $b0pstrings $bram0_name
+# 	set_BRAM_INITP $b1pstrings $bram1_name
+# 
+# 	# Now update the init strings
+# }
+# proc findDataPorts { bramList netBaseName } {
+# 	set debug 1
+# 	# iterate over the brams
+# 	#   vga/charGen/charmem/data_write_value[28]
+# 	foreach bram $bramList {
+# 		#set bram [lindex $bramList 0]
+# 		# vga/charGen/charmem/char_ram_reg_0
+# 		puts "BRAM $bram"
+# 		# iterate over all of the ports of the bram
+# 		set pins [get_pins -of_objects [get_cells $bram]]
+# 		foreach pin $pins {
+# 			set net [get_nets -quiet -of_objects $pin]
+# 			#vga/charGen/charmem/char_ram_reg_1/DIADI[3]
+# 			#get_nets  -of  [get_pins vga/charGen/charmem/char_ram_reg_1/DIADI[3] ]
+# 			if {$net != ""} {
+# 				#if { $debug} { puts "PIN $pin $net" }
+# 				# Strip off any indexing part of the string
+# 				set match [regexp -all -line  {^(.*\S)\[(\d+)\]$} $net fullmatch base index]
+# 				if { $match } {
+# 					if { [string equal $base $netBaseName] } {
+# 						# vga/charGen/charmem/char_data_to_write[12]
+# 						puts " Pin $pin"
+# 						puts "  Net=$net"
+# 						puts "   Base = $base; Index = $index"
+# 						# See if the net matches the netBaseName
+# 						set item [ list $bram $pin ]
+# 						puts "    $index - $bram:$pin"
+# 	#					  Key: bit number, value: list (BRAM/PIN)
+# 						dict set bramDict $index $item
+# 					}
+# 				}
+# 			}
+# 		}
+# 	}
+# 	# Iterate through dictionary
+# 	set maxIndex -1
+# 	foreach key [dict keys $bramDict] {
+# 		set value [dict get $bramDict $key]
+# 		puts "$key - $value"
+# 		if {$key > $maxIndex} {
+# 			set maxIndex $key
+# 		}
+# 	}
+# 	puts "max index=$maxIndex"
+# 	# Sort
+# 	set dictLength [dict size $bramDict]
+# 	for { set i 0 } {$i < [expr $maxIndex + 1] } { incr i } {
+# 		set value [dict get $bramDict $i]
+# 		puts "$i-$value"
+# 	}
+# 	return $bramDict
+# }
+# proc findMemoryWithBase { base_name} {
+# 	#puts "Finding $base_name"
+# 	# Get a list of all of the BRAMs
+# 	set bramList [get_brams]
+# 	# Iterate over all of the BRAMs to see if a match can be found
+# 	foreach bram $bramList {
+# 		#puts "BRAM $bram"
+# 		if {[string first $base_name $bram] != -1} {
+# 			#puts "Match with $base_name"
+# 			return $bram
+# 		}
+# 	}
+# 	return "None"
+# }
+# proc updateRiscvMemories { textFileName dataFileName bitstreamName { checkpointfilename ""}} {
+# 	# Determine the names of the instruction memory
+# 	set inst_0 [findMemoryWithBase "instruction_reg_0"]
+# 	set inst_1 [findMemoryWithBase "instruction_reg_1"]
+# 	set data_0 [findMemoryWithBase "data_memory_reg_0"]
+# 	set data_1 [findMemoryWithBase "data_memory_reg_1"]
+# 	puts "Instruction memories: $inst_0 $inst_1"
+# 	puts "Data memories: $data_0 $data_1"
+# 	if {[string equal "None" $inst_0] || [string equal "None" $inst_1] ||
+# 		[string equal "None" $data_0] || [string equal "None" $data_1]} {
+# 		puts "Cannot find instruction memory"
+# 		return
+# 	}
+# 	# Load the instruction memories
+# 	load_brams_interleaved_32hextext [list $inst_0 $inst_1] $textFileName
+# 	# Load the .data file
+# 	load_brams_interleaved_32hextext [list $data_0 $data_1] $dataFileName
+# 	# Write the bitfile
+# 	write_bitstream -force $bitstreamName
+# 	# See if there is a checkpoint write command
+# 	if {![string equal $checkpointfilename ""]} {
+# 		puts "Generating new checkpoint file"
+# 		write_checkpoint $checkpointfilename -force
+# 	}
+# }
+# set inst_0 mem/instruction_reg_0
+# set inst_1 mem/instruction_reg_1
+# set data_0 mem/data_memory_reg_0
+# set data_1 mem/data_memory_reg_1
+# if { [llength $argv] > 0 } {
+# 	# copy command name
+# 	set command [lindex $argv 0]
+# 
+# 	# Open checkpoint file (must have check point file as second argument)
+# 	if {[llength $argv] > 1} {
+# 		set checkpointFilename [lindex $argv 1]
+# 		open_checkpoint $checkpointFilename
+# 
+# 		if {[string equal $command "dumpMem"]} {
+# 			puts "Executing 'dumpMem' command"
+# 			# Output file for dump
+# 			if {[llength $argv] > 2} {
+# 				set outputFilename [lindex $argv 2]
+# 				set filehandle [open $outputFilename w]
+# 			} else {
+# 				set filehandle stdout
+# 			}
+# 			dumpMemory instruction_reg $filehandle
+# 			dumpMemory data_memory_reg $filehandle
+# 			if {[llength $argv] > 2} {
+# 				close $filehandle
+# 			}
+# 		} elseif {[string equal $command "updateMem"]} {
+# 			#  updateMem <cheeckpoint> <.text file> <.data file> <bitstream file>
+# 			puts "Executing 'updateMem' command"
+# 			if {[llength $argv] < 5} {
+# 				puts "Missing arguments: updateMem <checkpoint file> <.text file> <.data file> <bitstream file> \[optional .dcp file\]"
+# 			} else {
+# 				# Extract parameters
+# 				set textFileName [lindex $argv 2]
+# 				set dataFileName [lindex $argv 3]
+# 				set bitstreamName [lindex $argv 4]
+# 				if {[llength $argv] >= 6} {
+# 					set checkpointname [lindex $argv 5]
+# 				} else {
+# 					set checkpointname ""
+# 				}
+# 				updateRiscvMemories $textFileName $dataFileName $bitstreamName $checkpointname
+# 			}
+# 		} elseif {[string equal $command "updateData"]} {
+# 			puts "Executing 'updateData' command"
+# 			if {[llength $argv] < 4} {
+# 				puts "Missing arguments: updateData <checkpoint file> <.data file> <bitstream file> \[optional .dcp file\]"
+# 			} else {
+# 				# Load the .data file
+# 				set dataFileName [lindex $argv 2]
+# 				load_brams_dict_32hextext [list data_memory_reg_0 data_memory_reg_1 ] data_memory_read_wb $dataFileName
+# 				# Write the bitfile
+# 				set bitstreamName [lindex $argv 3]
+# 				write_bitstream -force $bitstreamName
+# 				# See if there is a checkpoint write command
+# 				if {[llength $argv] >= 5} {
+# 					puts "Generating new checkpoint file"
+# 					set bitstreamName [lindex $argv 4]
+# 					write_checkpoint $bitstreamName -force
+# 				}
+# 			}
+# 		} elseif {[string equal $command "updateFont"]} {
+# #vivado -mode batch -source ../../project/solution/load_mem.tcl -tclargs updateFont ./final.dcp ../../project/solution/font_mem_mod.txt font.bit font.dcp			puts "Executing 'updateFont' command"
+# 			if {[llength $argv] < 4} {
+# 				puts "Missing arguments:"
+# 			} else {
+# 				# Load the .text file
+# 				set textFileName [lindex $argv 2]
+# 				#set bram vga/charGen/fontrom/addr_reg_reg
+# 				set bram iosystem/vga/charGen/fontrom/addr_reg_reg
+# 				load_mem_font $bram $textFileName
+# 				# Write the bitfile
+# 				set bitstreamName [lindex $argv 3]
+# 				write_bitstream -force $bitstreamName
+# 				# See if there is a checkpoint write command
+# 				if {[llength $argv] >= 5} {
+# 					puts "Generating new checkpoint file"
+# 					set checkpointName [lindex $argv 4]
+# 					write_checkpoint $checkpointName -force
+# 				}
+# 			}
+# 		} elseif {[string equal $command "updateBackground"]} {
+# #vivado -mode batch -source ../../project/solution/load_mem.tcl -tclargs updateFont ./final.dcp ../../project/solution/font_mem_mod.txt font.bit font.dcp			puts "Executing 'updateFont' command"
+# 			puts "Executing 'updateBackground' command"
+# 			if {[llength $argv] < 4} {
+# 				puts "Missing arguments:"
+# 			} else {
+# 				# Load the .text file
+# 				set textFileName [lindex $argv 2]
+# 				# Set background vga values
+# 				set bram0 iosystem/vga/charGen/charmem/BRAM_inst_0/bram
+# 				set bram1 iosystem/vga/charGen/charmem/BRAM_inst_1/bram
+# 				set bram2 iosystem/vga/charGen/charmem/BRAM_inst_2/bram
+# 				set bram3 iosystem/vga/charGen/charmem/BRAM_inst_3/bram
+# 				set bramList [ list $bram0 $bram1 $bram2 $bram3 ]
+# 
+# 				# Load memories
+# 				load_brams_interleaved_32hextext  $bramList $textFileName
+# 
+# 				# Write the bitfile
+# 				set bitstreamName [lindex $argv 3]
+# 				write_bitstream -force $bitstreamName
+# 				# See if there is a checkpoint write command
+# 				if {[llength $argv] >= 5} {
+# 					puts "Generating new checkpoint file"
+# 					set checkpointName [lindex $argv 4]
+# 					write_checkpoint $checkpointName -force
+# 				}
+# 			}
+# 		} else {
+# 			puts "Unknown command: $command"
+# 		}
+# 	} else {
+# 		puts "Missing Checkpoint file"
+# 	}
+# 
+# } else {
+# 	# No commandline arguments. Determine whether a project is open
+# 	set a [current_project -quiet]
+# 	if { [expr { $a == "" } ] } {
+# 		# No current project. Missing command line options
+# 		puts $a
+# 		puts "Missing Command Name. Options:"
+# 		puts " dumpMem <checkpoint file> \[output file\]"
+# 		puts " updateMem <checkpoint file> <.text file> <.data file> <bitstream file> \[Optional .dcp file\]"
+# 		puts " updateData <checkpoint file> <.data file> <bitstream file> \[Optional .dcp file\]"
+# 		puts " updateFont <checkpoint file> <font file> <bitfile> \[output checkpoint file\]"
+# 		puts " updateBackground <checkpoint file> <background file> <bitfile>"
+# 	} else {
+# 		puts "Script loaded with current project $a"
+# 	}
+# 
+# 
+# }
+Command: open_checkpoint project.dcp
+
+Starting open_checkpoint Task
+
+Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.08 . Memory (MB): peak = 1457.453 ; gain = 0.000 ; free physical = 1394 ; free virtual = 16970
+INFO: [Device 21-403] Loading part xc7a35tcpg236-1
+Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 1755.621 ; gain = 0.000 ; free physical = 1050 ; free virtual = 16610
+INFO: [Netlist 29-17] Analyzing 78 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Project 1-853] Binary constraint restore complete.
+Reading XDEF placement.
+Reading placer database...
+Reading XDEF routing.
+Read XDEF File: Time (s): cpu = 00:00:00.15 ; elapsed = 00:00:00.21 . Memory (MB): peak = 2384.043 ; gain = 6.938 ; free physical = 515 ; free virtual = 16069
+Restored from archive | CPU: 0.210000 secs | Memory: 3.648949 MB |
+Finished XDEF File Restore: Time (s): cpu = 00:00:00.15 ; elapsed = 00:00:00.21 . Memory (MB): peak = 2384.043 ; gain = 6.938 ; free physical = 515 ; free virtual = 16069
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2384.043 ; gain = 0.000 ; free physical = 515 ; free virtual = 16069
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 12 instances were transformed.
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 12 instances
+
+INFO: [Project 1-604] Checkpoint was created with Vivado v2019.2 (64-bit) build 2708876
+open_checkpoint: Time (s): cpu = 00:00:10 ; elapsed = 00:00:16 . Memory (MB): peak = 2384.043 ; gain = 926.590 ; free physical = 514 ; free virtual = 16068
+skipped line // Font ROM Contents
+skipped line 
+skipped line // code x00
+skipped line // code x01
+00=000000007e818199bd8181a5817e000000000000000000000000000000000000
+skipped line // code x02
+skipped line // code x03
+01=0000000010387cfefefefe6c00000000000000007effffe7c3ffffdbff7e0000
+skipped line // code x04
+skipped line // code x05
+02=000000003c1818e7e7e73c3c18000000000000000010387cfe7c381000000000
+skipped line // code x06
+skipped line // code x07
+03=000000000000183c3c18000000000000000000003c18187effff7e3c18000000
+skipped line // code x08
+skipped line // code x09
+04=00000000003c664242663c0000000000ffffffffffffe7c3c3e7ffffffffffff
+skipped line // code x0a
+skipped line // code x0b
+05=0000000078cccccccc78321a0e1e0000ffffffffffc399bdbd99c3ffffffffff
+skipped line // code x0c
+skipped line // code x0d
+06=00000000e0f070303030303f333f00000000000018187e183c666666663c0000
+skipped line // code x0e
+skipped line // code x0f
+07=000000001818db3ce73cdb1818000000000000c0e6e767636363637f637f0000
+skipped line // code x10
+skipped line // code x11
+08=0000000002060e1e3efe3e1e0e0602000000000080c0e0f0f8fef8f0e0c08000
+skipped line // code x12
+skipped line // code x13
+09=000000006666006666666666666600000000000000183c7e1818187e3c180000
+skipped line // code x14
+skipped line // code x15
+0A=0000007cc60c386cc6c66c3860c67c00000000001b1b1b1b1b7bdbdbdb7f0000
+skipped line // code x16
+skipped line // code x17
+0B=000000307e183c7e1818187e3c18000000000000fefefefe0000000000000000
+skipped line // code x18
+skipped line // code x19
+0C=00000000183c7e18181818181818000000000000181818181818187e3c180000
+skipped line // code x1a
+skipped line // code x1b
+0D=0000000000003060fe60300000000000000000000000180cfe0c180000000000
+skipped line // code x1c
+skipped line // code x1d
+0E=0000000000002466ff66240000000000000000000000fec0c0c0000000000000
+skipped line // code x1e
+skipped line // code x1f
+0F=00000000001038387c7cfefe000000000000000000fefe7c7c38381000000000
+skipped line // code x20
+skipped line // code x21
+10=000000001818001818183c3c3c18000000000000000000000000000000000000
+skipped line // code x22
+skipped line // code x23
+11=000000006c6cfe6c6c6cfe6c6c00000000000000000000000000002466666600
+skipped line // code x24
+skipped line // code x25
+12=0000000086c66030180cc6c200000000000018187cc68606067cc0c2c67c1818
+skipped line // code x26
+skipped line // code x27
+13=000000000000000000000060303030000000000076ccccccdc76386c6c380000
+skipped line // code x28
+skipped line // code x29
+14=0000000030180c0c0c0c0c0c183000001c1ce3e31c1ce3e31c1ce3e31c1ce3e3
+skipped line // code x2a
+skipped line // code x2b
+15=00000000000018187e18180000000000000000000000663cff3c660000000000
+skipped line // code x2c
+skipped line // code x2d
+16=00000000000000007e0000000000000000000030181818000000000000000000
+skipped line // code x2e
+skipped line // code x2f
+17=0000000080c06030180c06020000000000000000181800000000000000000000
+skipped line // code x30
+skipped line // code x31
+18=000000007e1818181818187838180000000000007cc6c6e6f6decec6c67c0000
+skipped line // code x32
+skipped line // code x33
+19=000000007cc60606063c0606c67c000000000000fec6c06030180c06c67c0000
+skipped line // code x34
+skipped line // code x35
+1A=000000007cc6060606fcc0c0c0fe0000000000001e0c0c0cfecc6c3c1c0c0000
+skipped line // code x36
+skipped line // code x37
+1B=0000000030303030180c0606c6fe0000000000007cc6c6c6c6fcc0c060380000
+skipped line // code x38
+skipped line // code x39
+1C=00000000780c0606067ec6c6c67c0000000000007cc6c6c6c67cc6c6c67c0000
+skipped line // code x3a
+skipped line // code x3b
+1D=0000000030181800000018180000000000000000001818000000181800000000
+skipped line // code x3c
+skipped line // code x3d
+1E=000000000000007e00007e000000000000000000060c18306030180c06000000
+skipped line // code x3e
+skipped line // code x3f
+1F=000000001818001818180cc6c67c0000000000006030180c060c183060000000
+skipped line // code x40
+skipped line // code x41
+20=000000003c66c30000c3c3c3c3c30000000000007cc0dcdededec6c6c67c0000
+skipped line // code x42
+skipped line // code x43
+21=0000001866c33c0000c3c3c3c3c3000000000000fc666666667c666666fc0000
+skipped line // code x44
+skipped line // code x45
+22=00000000fe6662606878686266fe000000000000f86c6666666666666cf80000
+skipped line // code x46
+skipped line // code x47
+23=000000003a66c6c6dec0c0c2663c000000000000f06060606878686266fe0000
+skipped line // code x48
+skipped line // code x49
+24=000000003c18181818181818183c000000000000c6c6c6c6c6fec6c6c6c60000
+skipped line // code x4a
+skipped line // code x4b
+25=00000000e666666c78786c6666e600000000000078cccccc0c0c0c0c0c1e0000
+skipped line // code x4c
+skipped line // code x4d
+26=00000000c3c3c3c3c3dbffffe7c3000000000000fe6662606060606060f00000
+skipped line // code x4e
+skipped line // code x4f
+27=000000007cc6c6c6c6c6c6c6c67c000000000000c6c6c6c6cedefef6e6c60000
+skipped line // code x50
+skipped line // code x510
+28=00000e0c7cded6c6c6c6c6c6c67c000000000000f0606060607c666666fc0000
+skipped line // code x52
+skipped line // code x53
+29=000000007cc6c6060c3860c6c67c000000000000e66666666c7c666666fc0000
+skipped line // code x54
+skipped line // code x55
+2A=000000007cc6c6c6c6c6c6c6c6c60000000000003c18181818181899dbff0000
+skipped line // code x56
+skipped line // code x57
+2B=000000006666ffdbdbc3c3c3c3c3000000000000183c66c3c3c3c3c3c3c30000
+skipped line 
+skipped line // code x58
+skipped line // code x59
+2C=000000003c181818183c66c3c3c3000000000000c3c3663c18183c66c3c30000
+skipped line // code x5a
+skipped line // code x5b
+2D=000000003c30303030303030303c00001818ffdbd97838181c9edbff187eff18
+skipped line // code x5c
+skipped line // code x5d
+2E=000000003c0c0c0c0c0c0c0c0c3c00000000000002060e1c3870e0c080000000
+skipped line // code x5e
+skipped line // code x5f
+2F=0000ff00000000000000000000000000000000000000000000000000c66c3810
+skipped line // code x60
+skipped line // code x61
+30=0000000076cccccc7c0c78000000000000000000000000000000000000183030
+skipped line // code x62
+skipped line // code x63
+31=000000007cc6c0c0c0c67c0000000000000000007c666666666c786060e00000
+skipped line // code x64
+skipped line // code x65
+32=000000007cc6c0c0fec67c00000000000000000076cccccccc6c3c0c0c1c0000
+skipped line // code x66
+skipped line // code x67
+33=0078cc0c7ccccccccccc76000000000000000000f060606060f060646c380000
+skipped line // code x68
+skipped line // code x69
+34=000000003c181818181838001818000000000000e666666666766c6060e00000
+skipped line // code x6a
+skipped line // code x6b
+35=00000000e6666c78786c666060e00000003c66660606060606060e0006060000
+skipped line // code x6c
+skipped line // code x6d
+36=00000000dbdbdbdbdbffe60000000000000000003c1818181818181818380000
+skipped line // code x6e
+skipped line // code x6f
+37=000000007cc6c6c6c6c67c000000000000000000666666666666dc0000000000
+skipped line // code x70
+skipped line // code x71
+38=001e0c0c7ccccccccccc76000000000000f060607c6666666666dc0000000000
+skipped line // code x72
+skipped line // code x73
+39=000000007cc60c3860c67c000000000000000000f06060606676dc0000000000
+skipped line // code x74
+skipped line // code x75
+3A=0000000076cccccccccccc0000000000000000001c3630303030fc3030100000
+skipped line // code x76
+skipped line // code x77
+3B=0000000066ffdbdbc3c3c3000000000000000000183c66c3c3c3c30000000000
+skipped line // code x78
+skipped line // code x79
+3C=00f80c067ec6c6c6c6c6c6000000000000000000c3663c183c66c30000000000
+skipped line // code x7a
+skipped line // code x7b
+3D=000000000e18181818701818180e000000000000fec6603018ccfe0000000000
+skipped line // code x7c
+skipped line // code x7d
+3E=0000000070181818180e18181870000000000000181818181800181818180000
+skipped line // code x7e
+skipped line // code x7f
+3F=0000000000fec6c6c66c381000000000000000000000000000000000dc760000
+skipped line 
+Command: write_bitstream -force project_font.bit
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35t'
+Running DRC as a precondition to command write_bitstream
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/tools/Xilinx/Vivado/2019.2/data/ip'.
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado 12-3199] DRC finished with 0 Errors
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+INFO: [Designutils 20-2272] Running write_bitstream with 8 threads.
+Loading data files...
+Loading site data...
+Loading route data...
+Processing options...
+Creating bitmap...
+Creating bitstream...
+Writing bitstream ./project_font.bit...
+INFO: [Vivado 12-1842] Bitgen Completed Successfully.
+INFO: [Project 1-118] WebTalk data collection is enabled (User setting is ON. Install Setting is ON.).
+INFO: [Common 17-186] '/auto/fsd/leicr/323-labs-TravisLei20/lab12/usage_statistics_webtalk.xml' has been successfully sent to Xilinx on Wed Apr 13 19:23:29 2022. For additional details about this file, please refer to the WebTalk help file at /tools/Xilinx/Vivado/2019.2/doc/webtalk_introduction.html.
+INFO: [Common 17-83] Releasing license: Implementation
+23 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+write_bitstream completed successfully
+write_bitstream: Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 2819.773 ; gain = 435.730 ; free physical = 462 ; free virtual = 16016
+Generating new checkpoint file
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2819.773 ; gain = 0.000 ; free physical = 462 ; free virtual = 16016
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Writing placer database...
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Write XDEF Complete: Time (s): cpu = 00:00:00.38 ; elapsed = 00:00:00.14 . Memory (MB): peak = 2851.789 ; gain = 0.000 ; free physical = 454 ; free virtual = 16012
+INFO: [Common 17-1381] The checkpoint '/auto/fsd/leicr/323-labs-TravisLei20/lab12/project_font.dcp' has been generated.
+INFO: [Common 17-206] Exiting Vivado at Wed Apr 13 19:23:30 2022...

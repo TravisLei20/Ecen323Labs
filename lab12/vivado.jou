@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Wed Apr 13 19:42:09 2022
+# Process ID: 20048
+# Current directory: /auto/fsd/leicr/323-labs-TravisLei20/lab12
+# Command line: vivado -mode batch -source ../resources/load_mem.tcl -tclargs updateMem project_background.dcp final_iosystem_text.mem final_iosystem_data.mem project.bit
+# Log file: /auto/fsd/leicr/323-labs-TravisLei20/lab12/vivado.log
+# Journal file: /auto/fsd/leicr/323-labs-TravisLei20/lab12/vivado.jou
+#-----------------------------------------------------------
+source ../resources/load_mem.tcl
