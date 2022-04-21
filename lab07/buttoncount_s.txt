@@ -1,0 +1,38 @@
+ Address    Code        Basic                     Source
+
+0x00000000  0x07f00193  addi x3,x0,0x0000007f 46       addi gp, x0, 0x7f
+0x00000004  0x00800293  addi x5,x0,0x00000008 48       addi t0, x0, 8
+0x00000008  0x003181b3  add x3,x3,x3          50       add gp, gp, gp
+0x0000000c  0xfff28293  addi x5,x5,0xffffffff 51       addi t0, t0, -1
+0x00000010  0x00028463  beq x5,x0,0x00000004  52       beq t0, x0, L2
+0x00000014  0xfe000ae3  beq x0,x0,0xfffffffa  53       beq x0, x0, L1
+0x00000018  0x0001ac23  sw x0,0x00000018(x3)  56       sw x0, 0x18(gp)          
+0x0000001c  0x0241a403  lw x8,0x00000024(x3)  61       lw s0, 0x24(gp)
+0x00000020  0x00147293  andi x5,x8,0x00000001 63       andi t0, s0, 0x01
+0x00000024  0x04028e63  beq x5,x0,0x0000002e  65       beq t0, x0, WRITE_LED_AND_SEVEN_SEGMENT
+0x00000028  0x0001a023  sw x0,0x00000000(x3)  68       sw x0, 0x0(gp)
+0x0000002c  0xfe0008e3  beq x0,x0,0xfffffff8  70       beq x0, x0, LOOP_START        
+0x00000030  0x00447293  andi x5,x8,0x00000004 76       andi t0, s0, 0x04
+0x00000034  0x02028263  beq x5,x0,0x00000012  78       beq t0, x0, BTNU_CHK
+0x00000038  0x0241a403  lw x8,0x00000024(x3)  84       lw s0, 0x24(gp)
+0x0000003c  0x00447293  andi x5,x8,0x00000004 86       andi t0, s0, 0x04
+0x00000040  0x0042c293  xori x5,x5,0x00000004 88       xori t0, t0, 0x04
+0x00000044  0x0041a503  lw x10,0x00000004(x3) 90       lw a0, 0x4(gp)       
+0x00000048  0x00a1ac23  sw x10,0x00000018(x3) 92       sw a0, 0x18(gp)     
+0x0000004c  0xfe5006e3  beq x0,x5,0xfffffff6  94       beq x0, t0, LOOP_BTND
+0x00000050  0xfff00913  addi x18,x0,0xffffffff97       addi s2, x0, -1
+0x00000054  0x02000663  beq x0,x0,0x00000016  99       beq x0, x0, WRITE_LED_AND_SEVEN_SEGMENT
+0x00000058  0x01047293  andi x5,x8,0x00000010 104      andi t0, s0, 0x10
+0x0000005c  0x02028263  beq x5,x0,0x00000012  106      beq t0, x0, WRITE_LED_AND_SEVEN_SEGMENT
+0x00000060  0x0241a403  lw x8,0x00000024(x3)  112      lw s0, 0x24(gp)
+0x00000064  0x01047293  andi x5,x8,0x00000010 114      andi t0, s0, 0x10
+0x00000068  0x0102c293  xori x5,x5,0x00000010 116      xori t0, t0, 0x10
+0x0000006c  0x0041a503  lw x10,0x00000004(x3) 118      lw a0, 0x4(gp)       
+0x00000070  0x00a1ac23  sw x10,0x00000018(x3) 120      sw a0, 0x18(gp) 
+0x00000074  0xfe5006e3  beq x0,x5,0xfffffff6  122      beq x0, t0, LOOP_BTNU
+0x00000078  0x00100913  addi x18,x0,0x00000001125      addi s2, x0, 1      
+0x0000007c  0x00000263  beq x0,x0,0x00000002  126      beq x0, x0, WRITE_LED_AND_SEVEN_SEGMENT
+0x00000080  0x0121a023  sw x18,0x00000000(x3) 131      sw s2, 0x0(gp)
+0x00000084  0x0041a503  lw x10,0x00000004(x3) 133      lw a0, 0x4(gp)       
+0x00000088  0x00a1ac23  sw x10,0x00000018(x3) 135      sw a0, 0x18(gp)
+0x0000008c  0xf80008e3  beq x0,x0,0xffffffc8  137      beq x0, x0, LOOP_START
